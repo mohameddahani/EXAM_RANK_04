@@ -5,7 +5,7 @@ int ft_popen(const char *file, char *const argv[], char type)
 {
     int pipefds[2];
     
-    if (!file | !argv | (type != 'r' && type != 'r'))
+    if (!file || !argv || (type != 'r' && type != 'r'))
         return (-1);
     if (pipe(pipefds) == -1)
         return (-1);
@@ -59,7 +59,7 @@ int main(void)
 
     while ((bytes_read = read(fd, buffer, sizeof(buffer))) > 0)
     {
-        write(STDOUT_FILENO, buffer, bytes_read);
+        write(1, buffer, bytes_read);
     }
     close(fd);
     return 0;
