@@ -17,6 +17,17 @@ t_tree *new_node(int value)
     return (new_node);
 }
 
+void free_tree(t_tree *node)
+{
+    if (!node)
+        return ;
+    if (node->left)
+        free_tree(node->left);
+    if (node->right)
+        free_tree(node->right);
+    free(node);
+}
+
 
 // let try to create a simple tree like this
 /*
@@ -35,5 +46,7 @@ int main ()
     printf("value of root: %d\n", node->value);
     printf("value of first left: %d\n", node->left->value);
     printf("value of first right: %d\n", node->right->value);
+
+    free_tree(node);
 }
 
