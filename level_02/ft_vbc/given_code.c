@@ -3,12 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   given_code.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lsilva-x <lsilva-x@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mdahani <mdahani@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/29 18:11:38 by lsilva-x          #+#    #+#             */
-/*   Updated: 2025/08/04 16:59:20 by lsilva-x         ###   ########.fr       */
+/*   Created: 2025/08/31 16:21:00 by mdahani           #+#    #+#             */
+/*   Updated: 2025/08/31 16:21:01 by mdahani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+
 
 #include <stdio.h>
 #include <stdlib.h>

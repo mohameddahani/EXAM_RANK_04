@@ -5,14 +5,15 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdahani <mdahani@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/30 10:54:43 by mdahani           #+#    #+#             */
-/*   Updated: 2025/08/30 11:29:17 by mdahani          ###   ########.fr       */
+/*   Created: 2025/08/31 17:08:09 by mdahani           #+#    #+#             */
+/*   Updated: 2025/08/31 17:08:30 by mdahani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
-#include <stdlib.h>
+#include <malloc.h>
 #include <ctype.h>
+#include <stdlib.h>
 
 typedef struct node {
     enum {
@@ -24,6 +25,10 @@ typedef struct node {
     struct node *l;
     struct node *r;
 }   node;
+
+node *parse_expr(char **s);
+node *parse_factor(char **s);
+node *parse_term(char **s);
 
 node    *new_node(node n)
 {
@@ -51,12 +56,13 @@ void    unexpected(char c)
     if (c)
         printf("Unexpected token '%c'\n", c);
     else
-        printf("Unexpected end of file\n");
+        printf("Unexpexted end of input\n");
+    exit(1);
 }
 
 int accept(char **s, char c)
 {
-    if (**s)
+    if (**s == c)
     {
         (*s)++;
         return (1);
@@ -72,48 +78,6 @@ int expect(char **s, char c)
     return (0);
 }
 
-node *parse_primary(char **str)
-{
-    node *res;
-    node tmp;
-    if (**str == '(')
-    {
-        (*str)++;
-        res = parse_addtion(str);
-    }
-    
-}
-
-node *parse_multiplication(char **str)
-{
-    node *left;
-    node *right;
-    node tmp;
-
-    left = parse_primary(str);
-    
-}
-
-node *parse_addtion(char **str)
-{
-    node *left;
-    node *right;
-    node tmp;
-
-    left = parse_multiplication(str);
-}
-
-node    *parse_expr(char **s)
-{
-    node *ret = parse_addtion(s);
-
-    if (**s) 
-    {
-        destroy_tree(ret);
-        return (NULL);
-    }
-    return (ret);
-}
 
 int eval_tree(node *tree)
 {
@@ -126,16 +90,80 @@ int eval_tree(node *tree)
         case VAL:
             return (tree->val);
     }
+    return (0);
+}
+
+node *parse_expr(char **s) {
+    node *left = parse_term(s);
+    if (!left)
+        return (NULL);
+    while (accept(s, '+')) {
+        node *right = parse_term(s);
+        if (!right) {
+            destroy_tree(left);
+            return (NULL);
+        }
+        node n = {ADD, 0, left, right};
+        left = new_node(n);
+        if (!left) {
+            destroy_tree(right);
+            return (NULL);
+        }
+    }
+    return (left);
+}
+
+node *parse_factor(char **s) {
+    if (isdigit(**s)) {
+        node n = {VAL, **s - '0', NULL, NULL};
+        (*s)++;
+        return (new_node(n));
+    }
+    if (accept(s, '(')) {
+        node *n = parse_expr(s);
+        if (!expect(s, ')')) {
+            destroy_tree(n);
+            return (NULL);
+        }
+        return (n);
+    }
+    unexpected(**s);
+    return (NULL);
+}
+
+node *parse_term(char **s) {
+    node *left = parse_factor(s);
+    if (!left)
+        return (NULL);
+    while (accept(s, '*')) {
+        node *right = parse_factor(s);
+        if (!right) {
+            destroy_tree(left);
+            return (NULL);
+        }
+        node n = {MULTI, 0, left, right};
+        left = new_node(n);
+        if (!left) {
+            destroy_tree(right);
+            return (NULL);
+        }
+    }
+    return (left);
 }
 
 int main(int argc, char **argv)
 {
     if (argc != 2)
         return (1);
-    char *str = argv[1];
-    node *tree = parse_expr(&str);
-    if (!tree)
+    char *s = argv[1];
+    node *tree = parse_expr(&s);
+    if (!tree || *s) {
+        if (*s)
+            unexpected(*s);
+        else
+            unexpected(0);
         return (1);
+    }
     printf("%d\n", eval_tree(tree));
     destroy_tree(tree);
 }
