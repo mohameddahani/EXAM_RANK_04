@@ -6,7 +6,7 @@
 /*   By: mdahani <mdahani@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/31 16:50:11 by mdahani           #+#    #+#             */
-/*   Updated: 2025/08/31 16:53:16 by mdahani          ###   ########.fr       */
+/*   Updated: 2025/08/31 19:21:26 by mdahani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,8 @@ int	eval(const char *s, int *i)
 	int		result;
 	int		term;
 	int		factor;
-	char	op;
 
 	result = 0;
-	op = '+';
 	
 	while (s[*i] && s[*i] != ')')
 	{
@@ -72,13 +70,11 @@ int	eval(const char *s, int *i)
 		}
 		
 		// Apply the previous operator to result
-		if (op == '+')
-			result += term;
+		result += term;
 		
 		// Check for next operator
 		if (s[*i] == '+')
 		{
-			op = s[*i];
 			(*i)++;
 			if (!s[*i])
 				return (unexpected(s[*i]));
@@ -86,7 +82,7 @@ int	eval(const char *s, int *i)
 		else
 			break;
 	}
-	
+    
 	return (result);
 }
 
